@@ -7,10 +7,10 @@ from skimage import exposure
 import imutils
 import matplotlib.pyplot as plt
 import pytesseract
-pytesseract.pytesseract.tesseract_cmd = r'C:\Users\haripras\AppData\Local\Tesseract-OCR\tesseract.exe'
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 img = cv2.imread("Digital_Meter_1.jpg")
-showImage(img)
+showImage(img,"original")
 ## convert to hsv
 hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
@@ -24,21 +24,21 @@ green[imask] = img[imask]
 
 ## save
 # cv2.imwrite("green.png", green)
-showImage(green)
+showImage(green,"greening")
 
 
 gray = cv2.cvtColor(green, cv2.COLOR_BGR2GRAY)
-showImage(gray)
+showImage(gray,"graying")
 # print(pytesseract.image_to_string(gray))
 print(pytesseract.image_to_string(gray, lang="letsgodigital"))
 
 
 # im_gray = cv2.imread("./WhatsApp Image 2019-12-03 at 9.28.39 AM.jpeg", cv2.IMREAD_GRAYSCALE)
 (thresh, im_bw) = cv2.threshold(gray, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
-showImage(im_bw)
+showImage(im_bw,"thresholding")
 
 im_ = cv2.subtract(255, im_bw)
-showImage(im_)
+showImage(im_,"substract")
 
 print(pytesseract.image_to_string(im_))
 
@@ -49,13 +49,13 @@ print(pytesseract.image_to_string(im_bw,  lang="letsgodigital"))
 gray_ = cv2.subtract(255, im_)
 print(pytesseract.image_to_string(gray_, lang="letsgodigital"))
 
-showImage(gray_)
+showImage(gray_,"graying_threshold")
 
 
 
 # Blur the image
 res = cv2.GaussianBlur(gray_,(13,13), 0)
-showImage(res)
+showImage(res,"gausian_blur")
 
 print(pytesseract.image_to_string(res, lang="letsgodigital"))
 # pytesseract.image_to_string(res)
@@ -63,17 +63,17 @@ print(pytesseract.image_to_string(res, lang="letsgodigital"))
 
 # Edge detection
 edged = cv2.Canny(res, 100, 190)
-showImage(edged)
+showImage(edged,"edged")
 
 
 # Dilate it , number of iterations will depend on the image
 dilate = cv2.dilate(edged, None, iterations=0)
-showImage(edged)
+showImage(dilate,"dilated")
 
 
 # perform erosion
 erode = cv2.erode(dilate, None, iterations=0)
-showImage(erode)
+showImage(erode,"eroded")
 
 
 
@@ -84,17 +84,17 @@ mask2 = np.ones(erode.shape[:2], dtype="uint8") * 255
 
  # Remove ignored contours
 newimage = cv2.bitwise_and(erode.copy(), dilate.copy(), mask=mask2)
-showImage(newimage)
+showImage(newimage,"ignore_contour")
 
 
 # Again perform dilation and erosion
 newimage = cv2.dilate(newimage,None, iterations=3)
 newimage = cv2.erode(newimage,None, iterations=0)
-showImage(newimage)
+showImage(newimage,"dilation_erosion")
 
 
 ret,newimage = cv2.threshold(newimage,0,255,cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)
-showImage(newimage)
+showImage(newimage,"threshold")
 # Tesseract OCR
 print( pytesseract.image_to_string(newimage))
 showImage(newimage)

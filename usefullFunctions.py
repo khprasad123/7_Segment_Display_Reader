@@ -59,15 +59,15 @@ def putText(image,text):
     cv2.imwrite('FINAL.jpg', image)
 
 
-def showImage(img,default_text="temp"):
+def showImage(img,default_text="temp",save=False):
     cv2.imshow(default_text, img)
-    if(default_text!="temp"):
+    if(default_text!="temp" and save):
         cv2.imwrite(os.path.join(dirname, default_text+".jpg"), img)
     cv2.waitKey()
     cv2.destroyAllWindows()
 
 def getOcr(image):
-    pytesseract.pytesseract.tesseract_cmd = r'C:\Users\haripras\AppData\Local\Tesseract-OCR\tesseract.exe'
+    pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
     temp = pytesseract.image_to_string(image,lang="letsgodigital", config="whitelist=.0123456789")
     new = ""
     for i in temp:
